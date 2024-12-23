@@ -65,6 +65,16 @@ get_host_ip() {
     HOST_IP=$(hostname -I | awk '{print $1}')
 }
 
+# Function to ask if user wants to auto-start the container
+get_auto_start() {
+    read -p "Do you want to auto-start the container on host reboot? (y/n) [default: y]: " auto_start
+    if [[ "$auto_start" == [Nn]* ]]; then
+        AUTO_START="no"
+    else
+        AUTO_START="yes"
+    fi
+}
+
 # Main script execution
 check_docker
 
@@ -75,6 +85,7 @@ IMAGE_NAME="debian12-xfce4-vnc"
 get_container_name
 get_vnc_password
 get_ports
+get_auto_start
 get_host_ip
 
 # Check if the Docker image already exists
@@ -98,7 +109,13 @@ else
 fi
 
 # Run Docker container
+AUTO_START_FLAG=""
+if [ "$AUTO_START" = "yes" ]; then
+    AUTO_START_FLAG="--restart=always"
+fi
+
 if ! docker run -d \
+    $AUTO_START_FLAG \
     --name $CONTAINER_NAME \
     -p $NO_VNC_PORT:80 \
     -p $VNC_PORT:5901 \
@@ -113,3 +130,4 @@ echo "VNC server is running:"
 echo " - Access via noVNC: http://$HOST_IP:$NO_VNC_PORT/vnc.html"
 echo " - Access via VNC client: connect to $HOST_IP on port $VNC_PORT"
 echo "VNC password: $VNC_PASSWORD"
+echo "Auto-start on reboot: $AUTO_START"
