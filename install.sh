@@ -8,22 +8,14 @@ check_docker() {
     fi
 }
 
-# Function to get user input for container name
-get_container_name() {
-    read -p "Enter a custom container name (default: $IMAGE_NAME): " container_name
-    CONTAINER_NAME=${container_name:-$IMAGE_NAME}
-}
-
-# Function to get user input for VNC password
-get_vnc_password() {
-    read -p "Do you want to change the VNC password? (y/n) [default: y]: " change_pass
-    if [[ "$change_pass" == [Nn]* ]]; then
-        VNC_PASSWORD="password"
-    else
-        read -s -p "Enter new VNC password: " vnc_pass
-        echo
-        VNC_PASSWORD="$vnc_pass"
+# Function to check if container name is already in use
+check_container_name() {
+    local name="$1"
+    if docker ps -a --format '{{.Names}}' | grep -qE "^${name}$"; then
+        echo "Container name '$name' is already in use."
+        return 1
     fi
+    return 0
 }
 
 # Function to check if port is available
@@ -36,12 +28,41 @@ check_port() {
     fi
 }
 
+# Function to get user input for container name
+get_container_name() {
+    while true; do
+        read -p "Enter a container name (default: $IMAGE_NAME): " container_name
+        CONTAINER_NAME=${container_name:-$IMAGE_NAME}
+        if ! check_container_name "$CONTAINER_NAME"; then
+            echo "container name $CONTAINER_NAME already exist please use a different name."
+        else
+            break
+        fi
+    done
+}
+
+# Function to get user input for VNC password
+get_vnc_password() {
+    while true; do
+        read -s -p "Enter a VNC password: " vnc_pass
+        echo
+        if [ -z "$vnc_pass" ]; then
+            echo "Password cannot be empty. Please try again."
+        else
+            VNC_PASSWORD="$vnc_pass"
+            break
+        fi
+    done
+}
+
 # Function to get user input for ports with availability check
 get_ports() {
     while true; do
         read -p "Enter VNC port (default: 5901): " vnc_port
         VNC_PORT=${vnc_port:-5901}
-        if ! check_port $VNC_PORT; then
+        if ! [[ "$VNC_PORT" =~ ^[0-9]{1,5}$ ]] || ! [ "$VNC_PORT" -ge 1 ] || ! [ "$VNC_PORT" -le 65535 ]; then
+            echo "Invalid port number."
+        elif ! check_port $VNC_PORT; then
             echo "Port $VNC_PORT is already in use. Please choose a different port for VNC."
         else
             break
@@ -51,7 +72,9 @@ get_ports() {
     while true; do
         read -p "Enter noVNC port (default: 8080): " novnc_port
         NO_VNC_PORT=${novnc_port:-8080}
-        if ! check_port $NO_VNC_PORT; then
+        if ! [[ "$NO_VNC_PORT" =~ ^[0-9]{1,5}$ ]] || ! [ "$NO_VNC_PORT" -ge 1 ] || ! [ "$NO_VNC_PORT" -le 65535 ]; then
+            echo "Invalid port number."
+        elif ! check_port $NO_VNC_PORT; then
             echo "Port $NO_VNC_PORT is already in use. Please choose a different port for noVNC."
         else
             break
