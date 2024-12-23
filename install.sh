@@ -124,7 +124,7 @@ if docker image inspect $IMAGE_NAME &> /dev/null; then
         fi
     fi
 else
-    echo "Building new Docker image..."
+    echo "Building image..."
     if ! docker build -t $IMAGE_NAME .; then
         echo "Failed to build the Docker image."
         exit 1
