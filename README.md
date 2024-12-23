@@ -11,8 +11,8 @@ This Docker image provides a Debian 12 environment with XFCE4 desktop accessible
 **Clone the repository and run**
 
    ```sh
-   git clone https://github.com/leechunyen/docker_debian12_Xfce4_vnc.git
-   cd docker_debian12_Xfce4_vnc
+   git clone https://github.com/leechunyen/docker_debian12_-Xfce4_vnc.git
+   cd docker_debian12_-Xfce4_vnc
    chmod +x install.sh
    ./install.sh
    ```
