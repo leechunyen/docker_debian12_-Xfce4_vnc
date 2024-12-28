@@ -46,3 +46,7 @@ This Docker image provides a Debian 12 environment with XFCE4 desktop accessible
   
 ## License
   This project is licensed under the MIT License, see the [LICENSE](LICENSE) file for details.
+
+## Supporting me
+  [Donate Link](https://gogetfunding.com/open-source-project-and-library/)\
+  Thank you for your support!
