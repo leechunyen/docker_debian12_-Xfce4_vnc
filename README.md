@@ -1,15 +1,12 @@
 # docker debian12 Xfce4 vnc
-
 This Docker image provides a Debian 12 environment with XFCE4 desktop accessible via VNC or noVNC. Here's how to set it up and use it
 
 ## Prerequisites
-
 - **Docker:** Ensure Docker is installed on your system. If not, install it from the [official Docker website](https://docs.docker.com/get-docker/).
 
 ## Installation
 
 **Clone the repository and run**
-
    ```sh
    git clone https://github.com/leechunyen/docker_debian12_-Xfce4_vnc.git
    cd docker_debian12_-Xfce4_vnc
@@ -18,7 +15,6 @@ This Docker image provides a Debian 12 environment with XFCE4 desktop accessible
    ```
 
 **Usage**
-
    After running install.sh, you'll receive instructions on how to access the VNC server:
 
   - Access via noVNC: Open your browser and navigate to `http://<your-host-ip>:<noVNC-port>/vnc.html`.
